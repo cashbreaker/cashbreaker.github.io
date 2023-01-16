@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="/style.css">
+        <script src="/script.js"></script>
+        <style>
+            main {
+                margin: auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            img {
+                max-width: 70%;
+                margin: auto;
+            }
+
+            #newItemForm {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+        </style>
+    </head>
+    <body onload="getCategories()">
+        <nav id="nav-bar">
+            <div class="nav-section" id="nav-logo-section">
+                    <a id="nav-text" href="/">Home</a>
+            </div>
+            <div class="nav-section" id="nav-empty-section">
+            </div>
+            <div class="nav-section" id="nav-sell-section">
+                <a id="nav-text" href="/">Sell</a>
+            </div>
+            <div class="nav-section"  id="nav-login-section">
+                <a id="nav-text" href="/login">Log in</a>
+            </div>
+        </nav>
+        <main>
+            <h1>Add new Item</h1>
+            <form
+                id="newItemForm"
+            >
+                <label for="itemName">Item name</label>
+                <input id="itemName" type="text">
+                <label for="description">Item description</label>
+                <input id="description" type="text">
+                <label for="quantity">Quantity</label>
+                <input id="quantity" type="number">
+                <label for="pricePerItem">Price per Item</label>
+                <input id="pricePerItem" type="number">
+                <label for="category">Category</label>
+                <select id="category"></select>
+                <label for="manufacturer">Manufacturer</label>
+                <input id="manufacturer" type="text">
+                <input id="submit" type="submit" value="Add">
+            </form>
+        </main>
+    </body>
+    <script>
+        const form = document.getElementById('newItemForm');
+
+        function getCategories() {
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", webserverURL);
+            xhr.setRequestHeader("X-RequestType", "getCategories")
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    const response = JSON.parse(xhr.response);
+                    addCategories(response.categories);
+                }
+            };
+
+            xhr.send();
+        }
+
+        form.onsubmit = () => {
+            const xhr = new XMLHttpRequest();
+            data = {
+                name: form.querySelector("input[id='itemName']").value,
+                description: form.querySelector("input[id='description']").value,
+                category: form.querySelector("select[id='category']").value,
+                manufacturer: form.querySelector("input[id='manufacturer']").value,
+                quantityInitial: form.querySelector("input[id='quantity']").value,
+                price: form.querySelector("input[id='pricePerItem']").value
+            }
+
+            xhr.open('POST',webserverURL, true)
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("X-RequestType", "addProduct");
+
+            xhr.send(JSON.stringify(data));
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    form.reset(); //reset form after AJAX success or do something else
+                }
+                if (xhr.readyState === 4) {
+                    alert('Success')
+                }
+            }
+            //Fail the onsubmit to avoid page refresh.
+            return false; 
+        }
+
+        function addCategories(categories) {
+            const select = document.getElementById('category');
+            let html = '';
+            categories.forEach(element => {
+                html += `<option value="${element}">${element}</option>\n`
+            });
+            select.innerHTML = html;
+        }
+    </script>
+</html>

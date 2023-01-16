@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="/style.css">
+        <script src="/script.js"></script>
+        <style>
+            main {
+                margin: auto;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                gap: 30px;
+            }
+
+            h1 {
+                margin-bottom: 0;
+            }
+
+            .buttons {
+                width: 30%;
+                min-width: 600px;
+                
+            }
+
+            #text {
+                font-size: 3rem;
+            }
+        </style>
+    </head>
+    <body>
+        <nav id="nav-bar">
+            <div class="nav-section" id="nav-logo-section">
+                    <a id="nav-text" href="/">Home</a>
+            </div>
+            <div class="nav-section" id="nav-empty-section">
+            </div>
+            <div class="nav-section" id="nav-sell-section">
+                <a id="nav-text" href="/">Buy</a>
+            </div>
+            <div class="nav-section"  id="nav-login-section">
+                <a id="nav-text" href="/login">Log in</a>
+            </div>
+        </nav>
+        <main>
+            <h1>Welcome Seller</h1>
+            <div id="text">
+                In this menu you can manage your products<br>
+                Press the buttons below to proceed
+            </div>
+            <div class="buttons">
+                <button onclick="location.href='./newItem'">Add new Item</button>
+                <button onclick="location.href='./checkItems'">Check your Items</button>
+            </div>
+        </main>
+    </body>
+</html>

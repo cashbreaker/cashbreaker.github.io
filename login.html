@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Log In</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
+        <style>
+            main {
+                display: flex;
+                flex-direction: column;
+            }
+
+            main > * {
+                text-align: center;
+            }
+
+            #loginForm {
+                display: flex;
+                margin: auto;
+                gap: 20px;
+                width:  20%;
+                min-width: 600px;
+                flex-direction: column;
+            }
+
+            form > * {
+                font-size: 3rem;
+            }
+        </style>
+    </head>
+    <body>
+        <nav id="nav-bar">
+            <div class="nav-section" id="nav-logo-section">
+                    <a id="nav-text" href="/">Home</a>
+            </div>
+            <div class="nav-section" id="nav-empty-section">
+            </div>
+            <div class="nav-section" id="nav-sell-section">
+                <a id="nav-text" href="/sell/">Sell</a>
+            </div>
+            <div class="nav-section"  id="nav-login-section">
+                <a id="nav-text" href="/login">Log in</a>
+            </div>
+        </nav>
+        <main>
+            <h1>Log in</h1>
+            <form
+                id="loginForm"
+            >
+                <label for="username">Username</label>
+                <input type="text" id="username">
+                <label for="password">Password</label>
+                <input type="password" id="password">
+                <div class="buttons">
+                    <input type="submit" id="login" value="Log in">
+                    <button 
+                        type="button"
+                        id="register"
+                        onclick="location.href='/register'"
+                    >
+                        Register
+                    </button>
+                </div>
+            </form>
+        </main>
+    </body>
+    
+    <script>
+        const form = document.getElementById('loginForm');
+        
+        form.onsubmit = () => {
+            const xhr = new XMLHttpRequest();
+            data = {
+                username: form.querySelector("input[id='username']").value,
+                password: form.querySelector("input[id='password']").value
+            }
+
+            xhr.open('POST',webserverURL, true)
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("X-RequestType", "login")
+
+            xhr.send(JSON.stringify(data));
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    form.reset(); //reset form after AJAX success or do something else
+                }
+                if (xhr.readyState === 4) {
+                    const response = JSON.parse(xhr.response);
+                    
+                    document.cookie = "userToken=" + response.userToken;
+                    document.cookie = "username=" + response.username;
+                }
+            }
+            //Fail the onsubmit to avoid page refresh.
+            return false; 
+        }
+    </script>
+</html>

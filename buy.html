@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
+        <style>
+            main {
+                display: flex;
+                height: 100%;
+                width: 100%;
+                flex-direction: row;
+            }
+
+            #filterMenu {
+                flex-basis: 20%;
+                padding: max(2%,20px);
+                padding-top: 10px;
+                min-width: 200px;
+                border-right: 1px solid var(--border-color);
+                display: flex;
+                flex-direction: column;
+                justify-content: start;
+                gap: 10px;
+            }
+
+            #productSection {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            #buttonBar {
+                height: 50px;
+                margin: 20px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            #search {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 20px;
+            }
+
+            #search > label {
+                font-size: 3rem;
+                text-align: center;
+            }
+
+            #searchField {
+                font-size: 2rem;
+                padding: 10px;
+            }
+
+            #items {
+                padding: 40px;
+                padding-top: 0;
+                width: 100%;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .item {
+                display: flex;
+                height: 3rem;
+                width: 100%;
+                flex-direction: row;
+                justify-content:stretch;
+            }
+
+            .item > * {
+                padding: 1rem;
+                height: 100%;
+                border: var(--border-color) solid 1px;
+                border-top: 0;
+                border-right: 0;
+            }
+
+            #headerBar {
+                border-top: var(--border-color) solid 1px;
+            }
+
+
+
+            .name {
+                width: 15%;
+            }
+
+            .description {
+                width: 30%;
+            }
+
+            .manufacturer {
+                width: 15%;
+                text-align: center;
+            }
+
+            .category, .quantityLeft, .price {
+                width: 10%;
+                text-align: center;
+            }
+
+            .buttonDiv {
+                width: 10%;
+                border-right: var(--border-color) 1px solid;
+                padding: 0;
+                text-align: center;
+                position: relative;
+                display: flexbox;
+            }
+
+            .buyButton {
+                padding: 1rem;
+                margin-top: 0.33rem;
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+            }
+
+            #text {
+                font-size: 3rem;
+                padding: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav id="nav-bar">
+            <div class="nav-section" id="nav-logo-section">
+                    <a id="nav-text" href="/">Home</a>
+            </div>
+            <div class="nav-section" id="nav-empty-section">
+            </div>
+            <div class="nav-section" id="nav-sell-section">
+                <a id="nav-text" href="/sell/">Sell</a>
+            </div>
+            <div class="nav-section"  id="nav-login-section">
+                <a id="nav-text" href="/login">Log in</a>
+            </div>
+        </nav>
+        <main>
+            <form id="filterMenu">
+                <div id="text">Filters</div>
+                <label for="manufacturers">Manufacturers</label>
+                <select id="manufacturers" multiple></select>
+                <label for="category">Category</label>
+                <select id="category"></select>
+                <label for="minPrice">Min price</label>
+                <input type="number" id="minPrice">
+                <label for="maxPrice">Max price</label>
+                <input type="number" id="maxPrice">
+                <button type="button" onclick="getFormData()">Filter</button>
+            </form>
+            <div id="productSection">
+                <div id="buttonBar">
+                    <div id="search">
+                        <label for="searchField">Search</label>
+                        <input type="text" id="searchField">
+                    </div>
+                    <button id="cartButton">Cart</button>
+                </div>
+                <div id="items">
+                    <div class="item" id="headerBar">
+                        <div class="name">Name</div>
+                        <div class="description">Description</div>
+                        <div class="manufacturer">Manufacturer</div>
+                        <div class="category">Category</div>
+                        <div class="quantityLeft">Quantity</div>
+                        <div class="price">Price</div>
+                        <div class="buttonDiv"/>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+    <script>
+        const form = document.getElementById('filterMenu');
+        let products = [];
+        getProducts({
+            manufacturers: null,
+            category: null,
+            minPrice: null,
+            maxPrice: null
+        });
+
+        function getFormData() {
+            data = {
+                manufacturers: form.querySelector("select[id='manufacturers']").value,
+                category: form.querySelector("select[id='category']").value,
+                minPrice: form.querySelector("input[id='minPrice']").value,
+                maxPrice: form.querySelector("input[id='maxPrice']").value
+            }
+
+            getProducts(data)
+        }
+
+        function getProducts(data) {
+            const xhr = new XMLHttpRequest();
+
+            xhr.open('POST',webserverURL, true)
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("X-RequestType", "getProducts");
+
+            xhr.send(JSON.stringify(data));
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    const response = JSON.parse(xhr.response);
+                    products = response.products;
+                    showProducts();
+                }
+            }
+            return false; 
+        }
+        
+
+        function showProducts() {
+            let html = `<div class="item" id="headerBar">
+                            <div class="name">Name</div>
+                            <div class="description">Description</div>
+                            <div class="manufacturer">Manufacturer</div>
+                            <div class="category">Category</div>
+                            <div class="quantityLeft">Quantity</div>
+                            <div class="price">Price</div>
+                            <div class="buttonDiv"></div>
+                        </div>`;
+            products.forEach((product) => {
+                html += `
+                <div class="item">
+                    <div class="name">${product.name}</div>
+                    <div class="description">${product.description}</div>
+                    <div class="manufacturer">${product.manufacturer}</div>
+                    <div class="category">${product.category}</div>
+                    <div class="quantityLeft">${product.quantityLeft}</div>
+                    <div class="price">${product.price}</div>
+                    <div class="buttonDiv">
+                        <button class="buyButton" onclick="addToCart(${product.id})">BUY</button>
+                    </div>
+                </div>
+                `
+            })
+            document.getElementById('items').innerHTML = html;
+        }
+
+        function addToCart(itemId) {
+            const username = getCookie('username');
+            if (!username) {
+                window.location.href("/login");
+            }
+            
+            data = {
+                itemId: itemId,
+                username: username
+            }
+
+            const xhr = new XMLHttpRequest();
+
+            xhr.open('POST',webserverURL, true)
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("X-RequestType", "addItemToCart");
+
+            xhr.send(JSON.stringify(data));
+        }
+    </script>
+</html>

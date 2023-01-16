@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
+        <style>
+            main {
+                margin: auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                text-align: center;
+                align-items: center;
+                width: 90%;
+                max-width: 1500px;
+                gap: 40px;
+            }
+
+            #text {
+                text-align: justify;
+                line-height: 3.5rem;
+                font-size: 3rem;
+                
+            }
+        </style>
+    </head>
+    <body>
+        <nav id="nav-bar">
+            <div class="nav-section" id="nav-logo-section">
+                    <a id="nav-text" href="/">Home</a>
+            </div>
+            <div class="nav-section" id="nav-empty-section">
+            </div>
+            <div class="nav-section" id="nav-sell-section">
+                <a id="nav-text" href="/sell/">Sell</a>
+            </div>
+            <div class="nav-section"  id="nav-login-section">
+                <a id="nav-text" href="/login">Log in</a>
+            </div>
+        </nav>
+        <main>
+            <h1>Welcome to Aurora</h1>
+            <span id="text">
+                Next generation marketplace for you and your family<br>
+                We are the future of e-commerce with astonishing solutions and reliable customer support<br>
+                Press buttons below to experience year 2137 now!
+            </span>
+            
+            <div class="buttons">
+                <button onclick="location.href='./buy'">Buy</button>
+                <button onclick="location.href='./cart'">Cart</button>
+            </div>
+        </main>
+    </body>
+</html>
